@@ -27,7 +27,7 @@ import copy, thread, time
 class Leap2Data(Leap.Listener):
     finger_names = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
-    all_data = []
+    # all_data = []
     new_data = []
 
     def on_init(self, controller):
@@ -41,8 +41,8 @@ class Leap2Data(Leap.Listener):
         print ("Disconnected")
 
     def on_exit(self, controller):
-        hand_index = ["palm_position", "normal", "direction", "T0","T1","T2","T3", "I0","I1","I2","I3","I4",
-                           "M0","M1","M2","M3","M4", "R0","R1","R2","R3","R4", "P0","P1","P2","P3","P4"]
+        # hand_index = ["palm_position", "normal", "direction", "T0","T1","T2","T3", "I0","I1","I2","I3","I4",
+        #                    "M0","M1","M2","M3","M4", "R0","R1","R2","R3","R4", "P0","P1","P2","P3","P4"]
        
 
         print ("Exited")

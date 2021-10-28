@@ -46,11 +46,21 @@ class MyLeap():
         data = self.listener.new_data
         return data
 
+    def getColumns(self):
+        hand_columns_list = ["palm_position", "normal", "direction", "T0","T1","T2","T3", "I0","I1","I2","I3","I4", "M0","M1","M2","M3","M4", "R0","R1","R2","R3","R4", "P0","P1","P2","P3","P4"]
+        columns = []
+        xyz_columns_list = ['x', 'y', 'z']
+        for hand_columns in hand_columns_list:
+            for xyz_columns in xyz_columns_list:
+                columns.append(hand_columns + "_" + xyz_columns)
+
+        return columns
+
 if __name__ == "__main__":
     L = MyLeap()
-    while True:
-        data = L.getData()
-        print("get_data")
-        if not data == []:
-            print(data[0])
-        time.sleep(1.0/10.0)
+#     while True:
+#         data = L.getData()
+#         print("get_data")
+#         if not data == []:
+#             print(data[0])
+#         time.sleep(1.0/10.0)
