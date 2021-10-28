@@ -22,7 +22,7 @@ my_path = ".."     #親ディレクトリの相対パス
 sys.path.append(my_path)  # 親ディレクトリのファイルをインポートするための設定
 
 import random
-import math, copy, time
+import math, copy, time, glob
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -45,10 +45,15 @@ class OpenGL2Draw():
     ph = math.pi * 0.5
 
     def __init__(self):
+        self.gesture_name = raw_input("enter gesture name >> ").replace('\r', '')
+        self.data_dir = '../my_dataset/hand_data/'
         self.data = []
         self.all_data = []
         self.append_flag = False
         self.L = MyLeap()
+        self.columns = self.L.getColumns() # MyLeap参照
+
+
         pass
     
     #Leap Motionで取得した手モデルを描画する関数
@@ -83,8 +88,8 @@ class OpenGL2Draw():
         glutSwapBuffers()
 
         #保存する感覚の設定
-        #仮想立体裁断システムのフレームレートに近い方が良い（10fpsくらい?）
-        time.sleep(0.1)
+        #仮想立体裁断システムのフレームレートに近い方が良い（10fpsくらい?）-> 100fps
+        time.sleep(0.01)
 
     #手モデルを描画する関数
     def drawHand(self, data):
@@ -257,12 +262,9 @@ class OpenGL2Draw():
             print("reseted all_data")
 
         elif key == "s": #セーブする
-            file_name = raw_input("enter file name >> ")
-            file_name = file_name + ".txt"
-            df = pd.DataFrame(data = self.all_data)
-            df.to_csv(my_path + "\\my_dataset\\hand_data\\" + file_name, header=False, index = False)
-            print("save " + file_name + " , len : %d , frame : %f" %(len(self.all_data), len(self.all_data)/27.0) )
-            print("")
+            self.save_file()
+            self.all_data = []
+            print("reseted all_data")
 
 
     def keyboard_2(self, key, x, y):
@@ -272,6 +274,22 @@ class OpenGL2Draw():
 
         elif key == GLUT_KEY_LEFT:
             pass
+
+    def save_file(self):
+        # 取得したデータをDataFrameとして保存 
+        data = np.array(self.all_data).reshape(-1, 27*3)
+        df = pd.DataFrame(data=data, columns=self.columns)
+
+        #既存のジェスチャーのファイルの数を取得
+        data_files = glob.glob(self.data_dir + self.gesture_name + "*.csv")
+        file_num = len(data_files)
+        #"sample_000.csv"のフォーマットで保存する
+        file_num = "{0:03d}".format(file_num+1)
+        file_name = self.gesture_name + "_" + file_num + ".csv"
+
+        df.to_csv(self.data_dir + file_name, header=True, index=False)
+        print("%s has been saved. frame : %d" %(file_name, len(df)))
+        print("")
 
 
     def start(self):
